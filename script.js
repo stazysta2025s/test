@@ -50,41 +50,4 @@ function getOS() {
     saveVisit("Nieznane IP");
     });
 
-function saveVisit(ip) {
-    let visitCount = localStorage.getItem("visitCount") || 0;
-    visitCount++;
-    localStorage.setItem("visitCount", visitCount);
-
-    let data = {
-        ip: ip,
-        os: getOS(),
-        resolution: getResolution(),
-        time: new Date().toLocaleString(),
-        visits: visitCount
-    };
-
-    console.log("Dane do wysłania:", data);
-
-    fetch('https://script.google.com/macros/s/AKfycbwCx_YNEvoVekX20YHqc79n366savM-F_qZXRAVwP30Jeg8GZ1hhZ0NwUCHOYWgLAo/exec', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.text())
-    .then(result => console.log("Odpowiedź z Google Apps Script:", result))
-    .catch(error => console.error("Błąd wysyłania danych:", error));
-}
-
-fetch('https://api64.ipify.org?format=json')
-.then(response => response.json())
-.then(data => saveVisit(data.ip))
-.catch(error => {
-    console.error("Błąd pobierania IP:", error);
-    saveVisit("Nieznane IP");
-});
-
-    
-    
-    
-    
     

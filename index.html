@@ -1,18 +1,67 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zapisywanie Wejść</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logowanie użytkownika</title>
 </head>
 <body>
-<h1>Rejestrowanie wejść</h1>
-<p>Twoje dane zostały zapisane w przeglądarce.</p>
+    <h1>Informacje o użytkowniku</h1>
+    <ul id="logs"></ul> <!-- Miejsce na logi -->
 
-<h2>Historia wejść:</h2>
-<ul id="logs"></ul>
+    <script>
+        function getOS() {
+            let platform = window.navigator.platform;
+            if (/Win/i.test(platform)) return "Windows";
+            if (/Mac/i.test(platform)) return "MacOS";
+            if (/Linux/i.test(platform)) return "Linux";
+            if (/Android/i.test(navigator.userAgent)) return "Android";
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) return "iOS";
+            return "Nieznany";
+        }
 
-<script src="script.js"></script>
+        function getResolution() {
+            return `${window.screen.width}x${window.screen.height}`;
+        }
 
+        function saveVisit(ip) {
+            let visitCount = localStorage.getItem("visitCount") || 0;
+            visitCount++;
+            localStorage.setItem("visitCount", visitCount);
+
+            let data = {
+                ip: ip,
+                os: getOS(),
+                resolution: getResolution(),
+                time: new Date().toLocaleString(),
+                visits: visitCount
+            };
+
+            // Wyślij dane do Google Apps Script
+            fetch('https://script.google.com/macros/s/AKfycbxXXSZwFNSIO_RBfmqsgrRMoAQWBnHs0P1rNeUa73AHTGTyPyujQDbEnZNNYj6xQExUiw/exec', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            displayVisits(data);
+        }
+
+        function displayVisits(data) {
+            let logs = document.getElementById("logs");
+            let listItem = document.createElement("li");
+            listItem.textContent = `${data.time} - ${data.os} - ${data.resolution} - IP: ${data.ip} (Wejść: ${data.visits})`;
+            logs.appendChild(listItem);
+        }
+
+        // Pobranie IP użytkownika z API i zapisanie wizyty
+        fetch('https://api64.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => saveVisit(data.ip))
+        .catch(error => {
+            console.error("Błąd pobierania IP:", error);
+            saveVisit("Nieznane IP");
+        });
+    </script>
 </body>
-</html> 
+</html>

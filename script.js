@@ -25,7 +25,7 @@ function getOS() {
     visits: visitCount
     };
     
-    fetch('https://script.google.com/macros/s/AKfycbwSiwVHg0LHuFZtan5dKcCJDm-LILIsEIzElth86S_mrn2tuOtJtI_FmczFST0w0vqh/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbxXXSZwFNSIO_RBfmqsgrRMoAQWBnHs0P1rNeUa73AHTGTyPyujQDbEnZNNYj6xQExUiw/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
